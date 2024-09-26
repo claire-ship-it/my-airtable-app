@@ -29,19 +29,19 @@ function AIAssistant({ records }) {
     }
     setIsLoading(true);
 
-    // Prepare a summary of the AirTable data
-    const dataSummary = prepareDataSummary(records);
+    // Prepare a summary of the AirTable data if available
+    const dataSummary = records ? prepareDataSummary(records) : 'No booking data available';
 
     try {
       // Send request to OpenAI API
       const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: `You are a helpful assistant that answers questions about ABC Cleaning bookings. Here's a summary of the current booking data: ${dataSummary}` },
-          { role: "assistant", content: "Ensure that you not only answer the user's question but also the implied question. Think through what is being asked of you and given the data provided before any necessary calculations to effectively answer the question." },
+          { role: "system", content: `You are an AI assistant for ABC Cleaning, a cleaning service company. You have access to their booking data. Analyze the data to answer questions accurately. Here's a summary of the current booking data: ${dataSummary}` },
+          { role: "system", content: "When answering questions, perform any necessary calculations or analysis based on the provided data. Be specific and provide numerical answers when appropriate." },
           { role: "user", content: query }
         ],
-        max_tokens: 150,
+        max_tokens: 750,
       });
 
       setResponse(completion.choices[0].message.content.trim());
@@ -55,62 +55,19 @@ function AIAssistant({ records }) {
 
   // Function to prepare a summary of the AirTable data
   const prepareDataSummary = (records) => {
+    if (!records || records.length === 0) {
+      return 'No booking data available';
+    }
+
     const totalBookings = records.length;
-    const columnSummaries = {};
+    let summaryString = `Total Bookings: ${totalBookings}\n\nBooking Data:\n`;
 
-    // Get all unique column names
-    const allColumns = new Set();
-    records.forEach(record => {
-      Object.keys(record.fields).forEach(key => allColumns.add(key));
-    });
-
-    // Initialize summaries for each column
-    allColumns.forEach(column => {
-      columnSummaries[column] = {
-        type: null,
-        uniqueValues: new Set(),
-        numericTotal: 0,
-        numericCount: 0
-      };
-    });
-
-    // Process each record
-    records.forEach(record => {
+    records.forEach((record, index) => {
+      summaryString += `Booking ${index + 1}:\n`;
       Object.entries(record.fields).forEach(([key, value]) => {
-        const summary = columnSummaries[key];
-        
-        // Determine the type of data in this column
-        if (summary.type === null) {
-          summary.type = typeof value;
-        }
-
-        // Add to unique values
-        summary.uniqueValues.add(value);
-
-        // If numeric, add to total
-        if (typeof value === 'number') {
-          summary.numericTotal += value;
-          summary.numericCount++;
-        }
+        summaryString += `  ${key}: ${value}\n`;
       });
-    });
-
-    // Generate summary string
-    let summaryString = `Total Bookings: ${totalBookings}\n`;
-
-    Object.entries(columnSummaries).forEach(([column, summary]) => {
-      summaryString += `${column}:\n`;
-      summaryString += `  Unique Values: ${summary.uniqueValues.size}\n`;
-      
-      if (summary.type === 'number') {
-        const average = summary.numericCount > 0 ? summary.numericTotal / summary.numericCount : 0;
-        summaryString += `  Average: ${average.toFixed(2)}\n`;
-      }
-
-      // If there are fewer than 5 unique values, list them
-      if (summary.uniqueValues.size < 5) {
-        summaryString += `  Values: ${Array.from(summary.uniqueValues).join(', ')}\n`;
-      }
+      summaryString += '\n';
     });
 
     return summaryString;

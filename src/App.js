@@ -1,54 +1,53 @@
-// Main application component
-// Manages state for bookings and loading
-// Fetches booking data on component mount
-// Renders the main layout including AIAssistant, charts, and BookingsTable
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './styles/App.css';
 import AIAssistant from './components/AIAssistant';
 import BookingsTable from './components/BookingsTable';
 import BookingsPieChart from './components/BookingsPieChart';
 import BookingsBarChart from './components/BookingsBarChart';
-import { fetchBookings } from './services/api';
+import BookingsHeatMap from './components/BookingsHeatMap';
+import DateRangePicker from './components/DateRangePicker';
+import useBookings from './hooks/useBookings';
 
 function App() {
-  const [bookings, setBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    bookings,
+    filteredBookings,
+    loading,
+    selectedQuarter,
+    setSelectedQuarter,
+  } = useBookings();
 
-  useEffect(() => {
-    const loadBookings = async () => {
-      try {
-        const data = await fetchBookings();
-        setBookings(data);
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBookings();
-  }, []);
+  const handleQuarterChange = (quarter) => {
+    setSelectedQuarter(quarter);
+  };
 
   return (
     <div className="App">
       <div className="container">
         <h1>ABC Cleaning Analytics</h1>
-        <p className="subtitle">Make Sense of Your Data</p>
-        <AIAssistant />
+        <DateRangePicker
+          selectedQuarter={selectedQuarter}
+          onQuarterChange={handleQuarterChange}
+        />
+        <AIAssistant records={filteredBookings} />
         {loading ? (
           <p>Loading data...</p>
         ) : (
           <>
             <div className="charts-container">
               <div className="chart">
-                <BookingsPieChart bookings={bookings} />
+                <BookingsPieChart bookings={filteredBookings} />
               </div>
               <div className="chart">
-                <BookingsBarChart bookings={bookings} />
+                <BookingsBarChart bookings={filteredBookings} />
               </div>
             </div>
-            <BookingsTable bookings={bookings} />
+            <div className="heat-map-container">
+              <BookingsHeatMap bookings={filteredBookings} />
+            </div>
+            <div className="table-container">
+              <BookingsTable bookings={filteredBookings} />
+            </div>
           </>
         )}
       </div>

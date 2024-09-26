@@ -1,3 +1,6 @@
+/* Styles for the Bookings Table component
+   Defines table layout, colors, and hover effects */
+
 @import './variables.css';
 
 .bookings-table-container {

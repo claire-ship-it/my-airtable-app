@@ -36,17 +36,10 @@ h1 {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.subtitle {
-  color: var(--light-text-color);
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 1.5em;
-}
-
 .charts-container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .chart {
@@ -55,6 +48,36 @@ h1 {
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
+}
+
+.heat-map-container {
+  margin-bottom: 40px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.bookings-heat-map {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.bookings-heat-map h2 {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+/* Ensure the ComposableMap is responsive */
+.bookings-heat-map svg {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+}
+
+.table-container {
+  margin-top: 40px;
 }
 
 /* AI Assistant Styles */
@@ -116,6 +139,13 @@ h1 {
     width: 100%;
     margin-bottom: 20px;
   }
+
+  .heat-map-container,
+  .table-container {
+    margin-left: -20px;
+    margin-right: -20px;
+    border-radius: 0;
+  }
 }
 
 .App {
@@ -155,4 +185,12 @@ h1 {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Add this at the end of the file */
+.leaflet-container {
+  margin-bottom: 30px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
