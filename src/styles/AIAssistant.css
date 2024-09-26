@@ -1,39 +1,48 @@
+/* Styles for the AI Assistant component
+   Defines layout, colors, and interactions for the assistant interface */
+
+
+@import './variables.css';
+
 .ai-assistant {
-  background-color: rgba(150, 221, 246, 0.1);
-  padding: 20px;
-  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
 .ai-assistant h2 {
-  color: #96DDF6;
+  color: var(--primary-color);
   font-size: 1.8em;
   margin-bottom: 20px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  text-align: center;
 }
 
 .ai-assistant form {
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center form contents */
 }
 
 .ai-assistant textarea {
-  width: 100%;
+  width: calc(100% - 30px); /* Subtract padding from width */
   padding: 15px;
   margin-bottom: 15px;
-  border: none;
+  border: 1px solid var(--primary-color);
   border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
   font-size: 1em;
   resize: vertical;
 }
 
 .ai-assistant button {
   padding: 12px 20px;
-  background-color: #96DDF6;
-  color: #000944;
+  background-color: var(--primary-color);
+  color: var(--light-text-color);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -45,7 +54,7 @@
 }
 
 .ai-assistant button:hover {
-  background-color: #7ac8e6;
+  background-color: var(--tertiary-color);
   transform: translateY(-2px);
 }
 
@@ -59,12 +68,12 @@
 .ai-assistant .response {
   margin-top: 20px;
   padding: 15px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 9, 68, 0.05);
   border-radius: 5px;
-  border-left: 4px solid #96DDF6;
+  border-left: 4px solid var(--primary-color);
 }
 
 .ai-assistant .response strong {
-  color: #96DDF6;
+  color: var(--primary-color);
   font-size: 1.1em;
 }

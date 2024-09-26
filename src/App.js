@@ -1,72 +1,57 @@
+// Main application component
+// Manages state for bookings and loading
+// Fetches booking data on component mount
+// Renders the main layout including AIAssistant, charts, and BookingsTable
+
 import React, { useState, useEffect } from 'react';
-import Airtable from 'airtable';
+import './styles/App.css';
+import AIAssistant from './components/AIAssistant';
 import BookingsTable from './components/BookingsTable';
 import BookingsPieChart from './components/BookingsPieChart';
 import BookingsBarChart from './components/BookingsBarChart';
-import AIAssistant from './components/AIAssistant';
-import './styles/App.css';
+import { fetchBookings } from './services/api';
 
 function App() {
-  // State to store fetched records and any error messages
-  const [records, setRecords] = useState([]);
-  const [error, setError] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Log environment variables for debugging
-    console.log('All environment variables:', process.env);
-    console.log('Base ID:', process.env.REACT_APP_AIRTABLE_BASE_ID);
-    console.log('Token:', process.env.REACT_APP_AIRTABLE_PERSONAL_ACCESS_TOKEN);
+    const loadBookings = async () => {
+      try {
+        const data = await fetchBookings();
+        setBookings(data);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Check if required environment variables are set
-    if (!process.env.REACT_APP_AIRTABLE_PERSONAL_ACCESS_TOKEN) {
-      setError('Airtable Personal Access Token is not set');
-      return;
-    }
-
-    if (!process.env.REACT_APP_AIRTABLE_BASE_ID) {
-      setError('Airtable Base ID is not set');
-      return;
-    }
-
-    // Initialize Airtable connection
-    const base = new Airtable({
-      apiKey: process.env.REACT_APP_AIRTABLE_PERSONAL_ACCESS_TOKEN,
-      endpointUrl: 'https://api.airtable.com'
-    }).base(process.env.REACT_APP_AIRTABLE_BASE_ID);
-
-    // Fetch records from Airtable
-    base('Bookings').select({ maxRecords: 10, view: 'Grid view' })
-      .eachPage((records, fetchNextPage) => {
-        console.log('Fetched records:', records);
-        setRecords(records);
-        fetchNextPage();
-      }, (err) => {
-        if (err) {
-          console.error('Error fetching records:', err);
-          console.error('Error details:', JSON.stringify(err, null, 2));
-          setError(err.message || 'An unknown error occurred');
-        }
-      });
+    loadBookings();
   }, []);
 
-  // Display error message if there's an error
-  if (error) {
-    return <div className="error">Error: {error}</div>;
-  }
-
   return (
-    <div className="container">
-      <h1>ABC Cleaning Bookings Analytics</h1>
-      <AIAssistant records={records} />
-      <div className="charts-container">
-        <div className="chart">
-          <BookingsPieChart records={records} />
-        </div>
-        <div className="chart">
-          <BookingsBarChart records={records} />
-        </div>
+    <div className="App">
+      <div className="container">
+        <h1>ABC Cleaning Analytics</h1>
+        <p className="subtitle">Make Sense of Your Data</p>
+        <AIAssistant />
+        {loading ? (
+          <p>Loading data...</p>
+        ) : (
+          <>
+            <div className="charts-container">
+              <div className="chart">
+                <BookingsPieChart bookings={bookings} />
+              </div>
+              <div className="chart">
+                <BookingsBarChart bookings={bookings} />
+              </div>
+            </div>
+            <BookingsTable bookings={bookings} />
+          </>
+        )}
       </div>
-      <BookingsTable records={records} />
     </div>
   );
 }

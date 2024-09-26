@@ -1,75 +1,78 @@
+// Pie chart component for displaying bookings by service
+// Uses react-chartjs-2 for rendering
+// Processes booking data to count services
+// Configures chart options and uses custom color scheme
+
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-function BookingsBarChart({ records }) {
-  const frequencyData = records.reduce((acc, record) => {
-    const frequency = record.fields.Frequency || 'Unknown';
-    const amount = record.fields['Final Amount'] || 0;
-    acc[frequency] = (acc[frequency] || 0) + amount;
+const BookingsBarChart = ({ bookings }) => {
+  if (!bookings || bookings.length === 0) {
+    return <div>No booking data available</div>;
+  }
+
+  const frequencyCounts = bookings.reduce((acc, booking) => {
+    const frequency = booking.fields.Frequency;
+    acc[frequency] = (acc[frequency] || 0) + 1;
     return acc;
   }, {});
 
-  // Process the records data here
-  // This is just an example, adjust according to your actual data structure
+  const sortedFrequencies = Object.keys(frequencyCounts).sort((a, b) => {
+    const order = ['One-time', 'Weekly', 'Bi-weekly', 'Monthly'];
+    return order.indexOf(a) - order.indexOf(b);
+  });
+
   const data = {
-    labels: Object.keys(frequencyData),
+    labels: sortedFrequencies,
     datasets: [
       {
-        label: 'Bookings',
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
+        label: 'Number of Bookings',
+        data: sortedFrequencies.map(freq => frequencyCounts[freq]),
+        backgroundColor: '#5c9aca',  // Tertiary color
+        borderColor: '#000944',  // Primary color
         borderWidth: 1,
-        hoverBackgroundColor: 'rgba(75,192,192,0.6)',
-        hoverBorderColor: 'rgba(75,192,192,1)',
-        data: [65, 59, 80, 81, 56, 55, 40]
-      }
-    ]
+      },
+    ],
   };
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    aspectRatio: 1,  // This will make the chart square, matching the pie chart
     plugins: {
       legend: {
         position: 'top',
       },
       title: {
         display: true,
-        text: 'Bookings by Frequency'
+        text: 'Bookings by Frequency',
       },
-      tooltip: {
-        callbacks: {
-          label: (context) => {
-            const label = context.dataset.label || '';
-            const value = context.raw || 0;
-            return `${label}: $${value.toFixed(2)}`;
-          }
-        }
-      }
     },
     scales: {
-      y: {
-        beginAtZero: true,
+      x: {
         title: {
           display: true,
-          text: 'Total Amount ($)'
-        }
-      }
+          text: 'Frequency',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Number of Bookings',
+        },
+        beginAtZero: true,
+      },
     },
-    animation: {
-      duration: 2000,
-      easing: 'easeInOutQuart'
-    }
   };
 
   return (
-    <div style={{ height: '400px', width: '100%', marginTop: '20px' }}>
+    <div style={{ height: '300px' }}>  {/* Adjust this height as needed */}
       <Bar data={data} options={options} />
     </div>
   );
-}
+};
 
 export default BookingsBarChart;

@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .bookings-table-container {
   margin-top: 20px;
 }
@@ -19,7 +21,7 @@
   background-color: var(--primary-color);
   color: var(--light-text-color);
   padding: 12px;
-  text-align: left;
+  text-align: center; /* Center the table headings */
   border-top: 1px solid var(--primary-color);
 }
 
@@ -35,6 +37,7 @@
   padding: 12px;
   border-bottom: 1px solid rgba(0, 9, 68, 0.2);
   color: var(--text-color);
+  text-align: center; /* Center the table cell content */
 }
 
 .bookings-table .even-row {
