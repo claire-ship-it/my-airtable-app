@@ -1,0 +1,70 @@
+.ai-assistant {
+  background-color: rgba(150, 221, 246, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ai-assistant h2 {
+  color: #96DDF6;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ai-assistant form {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-assistant textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1em;
+  resize: vertical;
+}
+
+.ai-assistant button {
+  padding: 12px 20px;
+  background-color: #96DDF6;
+  color: #000944;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ai-assistant button:hover {
+  background-color: #7ac8e6;
+  transform: translateY(-2px);
+}
+
+.ai-assistant button:disabled {
+  background-color: #4a4a5a;
+  color: #8a8a9a;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ai-assistant .response {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  border-left: 4px solid #96DDF6;
+}
+
+.ai-assistant .response strong {
+  color: #96DDF6;
+  font-size: 1.1em;
+}

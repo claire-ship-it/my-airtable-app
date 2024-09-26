@@ -1,0 +1,106 @@
+:root {
+  --primary-color: #000944;
+  --secondary-color: #93dcf5;
+  --tertiary-color: #5c9aca;
+  --background-color: #fffffc;
+  --text-color: #000944;
+  --light-text-color: #fffffc;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #000944, #5c9aca, #93dcf5, #fffffc);
+  background-attachment: fixed;
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  color: var(--light-text-color);
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.charts-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.chart {
+  width: 48%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+/* AI Assistant Styles */
+.ai-assistant {
+  background-color: rgba(0, 9, 68, 0.9);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ai-assistant h2 {
+  color: var(--secondary-color);
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.ai-assistant p, .ai-assistant input, .ai-assistant button {
+  color: var(--light-text-color);
+}
+
+.ai-assistant input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--secondary-color);
+  padding: 8px;
+  border-radius: 4px;
+  color: var(--light-text-color);
+}
+
+.ai-assistant button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.ai-assistant button:hover {
+  background-color: var(--tertiary-color);
+}
+
+/* BookingsTable Styles */
+.bookings-table {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .charts-container {
+    flex-direction: column;
+  }
+
+  .chart {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
