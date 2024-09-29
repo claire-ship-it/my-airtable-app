@@ -27,18 +27,10 @@ const BookingsPieChart = ({ bookings }) => {
       {
         data: Object.values(bookingCounts),
         backgroundColor: [
-          '#000944',  // Primary color
-          '#93dcf5',  // Secondary color
-          '#5c9aca',  // Tertiary color
-          '#fffffc',  // Background color
-          '#61dafb',  // React logo color
+          '#000944', '#93dcf5', '#5c9aca', '#fffffc', '#61dafb',
         ],
         borderColor: [
-          '#000944',
-          '#93dcf5',
-          '#5c9aca',
-          '#fffffc',
-          '#61dafb',
+          '#000944', '#93dcf5', '#5c9aca', '#fffffc', '#61dafb',
         ],
         borderWidth: 1,
       },
@@ -47,18 +39,27 @@ const BookingsPieChart = ({ bookings }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Bookings by Service',
+        position: 'right',
+        labels: {
+          boxWidth: 15,
+          font: { 
+            size: 12,
+            weight: 'bold'
+          },
+          padding: 10
+        },
       },
     },
   };
 
-  return <Pie data={data} options={options} />;
+  return (
+    <div style={{ width: '100%', height: '100%', minHeight: '280px' }}> {/* Adjusted minHeight */}
+      <Pie data={data} options={options} />
+    </div>
+  );
 };
 
 export default BookingsPieChart;

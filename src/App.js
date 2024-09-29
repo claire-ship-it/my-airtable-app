@@ -11,9 +11,13 @@ import BookingsPieChart from './components/BookingsPieChart';
 import BookingsBarChart from './components/BookingsBarChart';
 import AnimatedList from './components/AnimatedList';
 import { fetchBookings } from './services/api';
+import './ui/PulsatingButton.css';
+import TimeframeSelector from './components/TimeframeSelector';
+import { TypingAnimation } from './components/TypingAnimation';
 
 function App() {
   const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [businessMetrics, setBusinessMetrics] = useState({
     revenue: 0,
@@ -25,6 +29,9 @@ function App() {
     recurringCustomers: 0,
     totalBookings: 0,
   });
+  const [selectedTimeframe, setSelectedTimeframe] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
 
   useEffect(() => {
     const loadBookings = async () => {
@@ -59,6 +66,7 @@ function App() {
           }
 
           setBookings(validBookings);
+          setFilteredBookings(validBookings);
           calculateBusinessMetrics(validBookings);
           calculateProgressMetrics(validBookings);
         } else {
@@ -135,6 +143,43 @@ function App() {
     });
   };
 
+  const filterBookingsByTimeframe = (bookings, type, value) => {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+
+    return bookings.filter(booking => {
+      const bookingDate = new Date(booking.fields.Date);
+      const bookingYear = bookingDate.getFullYear();
+      const bookingMonth = bookingDate.getMonth();
+
+      switch (type) {
+        case 'month':
+          return bookingMonth === parseInt(value) - 1 && bookingYear === currentYear;
+        case 'quarter':
+          const quarter = Math.floor(bookingMonth / 3) + 1;
+          return quarter === parseInt(value) && bookingYear === currentYear;
+        case 'year':
+          return bookingYear === parseInt(value);
+        default:
+          return true;
+      }
+    });
+  };
+
+  const handleTimeframeSelect = (type, value) => {
+    setSelectedTimeframe({ type, value });
+    const filtered = filterBookingsByTimeframe(bookings, type, value);
+    setFilteredBookings(filtered);
+    calculateBusinessMetrics(filtered);
+    calculateProgressMetrics(filtered);
+  };
+
+  const handleHeaderAnimationComplete = () => {
+    setHeaderAnimationComplete(true);
+    setShowWelcome(true);
+  };
+
   return (
     <div className="App">
       <div className="grid-background">
@@ -149,7 +194,15 @@ function App() {
       </div>
       <div className="container">
         <h1>ABC Cleaning Analytics</h1>
-        <p className="welcome-message">Welcome Back, John!</p>
+        <div className="header-container">
+          <p className="welcome-message">
+            <TypingAnimation text="Welcome Back, John!" typingSpeed={100} />
+          </p>
+          <TimeframeSelector 
+            onSelect={handleTimeframeSelect} 
+            selectedTimeframe={selectedTimeframe}
+          />
+        </div>
         <div className="content-wrapper">
           <div className="magic-cards-container">
             <div className="magic-card">
@@ -207,7 +260,17 @@ function App() {
               </div>
             </div>
             <div className="ai-assistant-container">
-              <AIAssistant />
+              <AIAssistant 
+                businessData={{
+                  revenue: businessMetrics.revenue,
+                  profit: businessMetrics.profit,
+                  grossMargin: businessMetrics.grossMargin,
+                  totalRating: businessMetrics.totalRating,
+                  recurringCustomers: progressMetrics.recurringCustomers,
+                  totalBookings: progressMetrics.totalBookings
+                }}
+                allBookings={filteredBookings} // Pass all bookings to AIAssistant
+              />
             </div>
           </div>
           {loading ? (
@@ -215,39 +278,40 @@ function App() {
           ) : (
             <>
               <div className="charts-container">
-                {bookings.length > 0 ? (
-                  <div className="chart">
-                    <BookingsPieChart bookings={bookings} />
+                <div className="chart-item">
+                  <h3>Bookings by Service Type</h3>
+                  <div className="chart-container">
+                    {filteredBookings.length > 0 ? (
+                      <BookingsPieChart bookings={filteredBookings} />
+                    ) : (
+                      <p>No valid data available for Pie Chart</p>
+                    )}
                   </div>
-                ) : (
-                  <p>No valid data available for Pie Chart</p>
-                )}
-                {bookings.length > 0 ? (
-                  <div className="chart">
-                    <BookingsBarChart bookings={bookings} />
+                </div>
+                <div className="chart-item">
+                  <h3>Bookings by Frequency</h3>
+                  <div className="chart-container">
+                    {filteredBookings.length > 0 ? (
+                      <BookingsBarChart bookings={filteredBookings} />
+                    ) : (
+                      <p>No valid data available for Bar Chart</p>
+                    )}
                   </div>
-                ) : (
-                  <p>No valid data available for Bar Chart</p>
-                )}
+                </div>
               </div>
               <div className="lists-container">
                 <AnimatedList
                   title="Recent Bookings"
-                  items={bookings.slice(0, 5).map(booking => {
-                    const finalAmount = parseFloat(booking.fields['Final Amount'] || 0);
-                    const salesTax = parseFloat(booking.fields['Sales Tax'] || 0);
-                    const revenue = Math.round(finalAmount - salesTax);
-                    return {
-                      id: booking.id,
-                      title: booking.fields.Service,
-                      subtitle: `${booking.fields.Date} - ${booking.fields.Name}`,
-                      value: `$${revenue}`
-                    };
-                  })}
+                  items={filteredBookings.slice(0, 5).map(booking => ({
+                    id: booking.id,
+                    title: booking.fields.Service,
+                    subtitle: `${booking.fields.Date} - ${booking.fields.Name}`,
+                    value: `$${Math.round(parseFloat(booking.fields['Final Amount'] || 0) - parseFloat(booking.fields['Sales Tax'] || 0))}`
+                  }))}
                 />
                 <AnimatedList
                   title="Recent Reviews"
-                  items={bookings.filter(booking => booking.fields['Rating comment'])
+                  items={filteredBookings.filter(booking => booking.fields['Rating comment'])
                     .slice(0, 5)
                     .map(booking => ({
                       id: booking.id,

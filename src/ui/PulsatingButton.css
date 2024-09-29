@@ -1,0 +1,47 @@
+.pulsating-button {
+  position: relative;
+  display: inline-flex;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  background-color: var(--background-color, rgb(147, 220, 245)); /* Lightest logo color */
+  color: rgb(0, 9, 68); /* Darkest color for text */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  overflow: hidden;
+  align-self: center; /* Center the button horizontally */
+  margin-top: 10px; /* Add some space above the button */
+}
+
+.pulsating-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-color: var(--pulse-color, rgb(0, 9, 68)); /* Darkest logo color */
+  opacity: 0;
+  border-radius: 50%;
+  animation: pulse var(--pulse-duration, 2s) cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.button-content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3; /* Increase opacity for better visibility */
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
