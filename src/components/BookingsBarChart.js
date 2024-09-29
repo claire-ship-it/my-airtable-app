@@ -1,8 +1,3 @@
-// Pie chart component for displaying bookings by service
-// Uses react-chartjs-2 for rendering
-// Processes booking data to count services
-// Configures chart options and uses custom color scheme
-
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -31,8 +26,8 @@ const BookingsBarChart = ({ bookings }) => {
       {
         label: 'Number of Bookings',
         data: sortedFrequencies.map(freq => frequencyCounts[freq]),
-        backgroundColor: '#5c9aca',  // Tertiary color
-        borderColor: '#000944',  // Primary color
+        backgroundColor: '#5c9aca',
+        borderColor: '#000944',
         borderWidth: 1,
       },
     ],
@@ -41,10 +36,9 @@ const BookingsBarChart = ({ bookings }) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    aspectRatio: 1,  // This will make the chart square, matching the pie chart
     plugins: {
       legend: {
-        position: 'top',
+        display: false,
       },
       title: {
         display: true,
@@ -52,27 +46,17 @@ const BookingsBarChart = ({ bookings }) => {
       },
     },
     scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Frequency',
-        },
-      },
       y: {
-        title: {
-          display: true,
-          text: 'Number of Bookings',
-        },
         beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+          precision: 0,
+        },
       },
     },
   };
 
-  return (
-    <div style={{ height: '300px' }}>  {/* Adjust this height as needed */}
-      <Bar data={data} options={options} />
-    </div>
-  );
+  return <Bar data={data} options={options} />;
 };
 
 export default BookingsBarChart;

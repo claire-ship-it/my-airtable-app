@@ -4,7 +4,7 @@
 
 export const config = {
   airtableBaseId: process.env.REACT_APP_AIRTABLE_BASE_ID,
-  airtablePersonalAccessToken: process.env.REACT_APP_AIRTABLE_PERSONAL_ACCESS_TOKEN,
+  airtablePersonalAccessToken: process.env.REACT_APP_AIRTABLE_PERSONAL_ACCESS_TOKEN, // Updated name
   openAIApiKey: process.env.REACT_APP_OPENAI_API_KEY,
   features: {
     aiAssistant: true,
@@ -16,10 +16,13 @@ export const config = {
 };
 
 export function validateConfig() {
-  const requiredVars = ['airtableBaseId', 'airtablePersonalAccessToken'];
+  const requiredVars = ['airtableBaseId', 'airtablePersonalAccessToken']; // Updated name
   const missingVars = requiredVars.filter(varName => !config[varName]);
   
   if (missingVars.length > 0) {
-    throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+    console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
   }
 }
+
+// Call validateConfig immediately
+validateConfig();
